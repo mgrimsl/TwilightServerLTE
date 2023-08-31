@@ -1,0 +1,107 @@
+[gd_scene load_steps=8 format=3 uid="uid://c7hxqwc4xn30k"]
+
+[ext_resource type="PackedScene" uid="uid://b2wbj33uxm0dt" path="res://src/champions/player.tscn" id="1_l57ff"]
+[ext_resource type="Script" path="res://src/mangers/PlayerManager.gd" id="2_7jm3s"]
+[ext_resource type="Texture2D" uid="uid://0at40m88dcvh" path="res://assets/tempServerBG.png" id="3_jlk2p"]
+
+[sub_resource type="GDScript" id="GDScript_38yv6"]
+script/source = "extends Node2D
+
+const PORT = 8080
+const MAX_PLAYERS = 200
+
+var peer = ENetMultiplayerPeer.new()
+@export var player_scene : PackedScene
+
+signal player_connected(peer_id, player_info)
+signal player_disconnected(peer_id)
+signal server_disconnected
+
+# This will contain player info for every player, with the keys being each player's unique IDs.
+var players = {}
+
+# This is the local player info. This should be modified locally before the connection is made.
+# It will be passed to every other peer.
+# For example, the value of \"name\" can be set to something the player entered in a UI scene.
+var player_info = {\"name\": \"Name\"}
+
+var players_loaded = 0
+
+func _ready():
+	multiplayer.get
+	peer.create_server(PORT, MAX_PLAYERS)
+	multiplayer.multiplayer_peer = peer
+	multiplayer.peer_connected.connect(_on_player_connected)
+	multiplayer.peer_disconnected.connect(_on_player_disconnected)
+	#multiplayer.connected_to_server.connect(_on_connected_ok)
+	#multiplayer.connection_failed.connect(_on_connected_fail)
+	#multiplayer.server_disconnected.connect(_on_server_disconnected)
+	#add_player(1)
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	pass
+
+func _on_player_disconnected(id):
+	print(\"dis\")
+	rpc(\"_del_player\", id)
+#@rpc(\"any_peer\") 
+func _on_player_connected(id):
+	print(\"player connected id: \", id)
+
+@rpc(\"reliable\", \"any_peer\") func _selectChampion(champId):
+	print(\"select \", champId)
+	var id = multiplayer.get_remote_sender_id()
+	_register_player.rpc_id(id,id)
+	_register_player(id)
+	var player = player_scene.instantiate()
+	player.champId = champId
+	player.name = str(id)
+	$PlayersMan.add_child(player)
+
+@rpc(\"reliable\")
+func _register_player(id):
+	print(\"register player id: \", id)
+	#player_connected.emit(id, id)
+
+@rpc(\"any_peer\", \"reliable\", \"call_local\") func _del_player(id):
+	print(\"remote sender: \", multiplayer.get_remote_sender_id(), \" wants to delte id: \", id)
+	$PlayersMan.get_node(str(id)).queue_free()
+"
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_33ngj"]
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ceuxm"]
+albedo_texture = ExtResource("3_jlk2p")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lrj47"]
+size = Vector3(100, 0.002, 100)
+
+[node name="World" type="Node2D"]
+script = SubResource("GDScript_38yv6")
+player_scene = ExtResource("1_l57ff")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_energy = 1.4
+shadow_enabled = true
+
+[node name="PlayersMan" type="Node2D" parent="."]
+script = ExtResource("2_7jm3s")
+
+[node name="Area2D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0551846, 0)
+
+[node name="TEMP" type="Sprite2D" parent="Area2D"]
+texture = ExtResource("3_jlk2p")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Area2D"]
+mesh = SubResource("PlaneMesh_33ngj")
+surface_material_override/0 = SubResource("StandardMaterial3D_ceuxm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area2D"]
+shape = SubResource("BoxShape3D_lrj47")
+
+[node name="Camera2D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 18.7466, 0)
