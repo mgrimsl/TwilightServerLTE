@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://c7hxqwc4xn30k"]
+[gd_scene load_steps=9 format=3 uid="uid://c7hxqwc4xn30k"]
 
 [ext_resource type="PackedScene" uid="uid://b2wbj33uxm0dt" path="res://src/champions/player.tscn" id="1_l57ff"]
 [ext_resource type="Script" path="res://src/mangers/PlayerManager.gd" id="2_7jm3s"]
 [ext_resource type="Texture2D" uid="uid://0at40m88dcvh" path="res://assets/tempServerBG.png" id="3_jlk2p"]
+[ext_resource type="Script" path="res://src/mangers/InputHandler.gd" id="4_rfhra"]
 
 [sub_resource type="GDScript" id="GDScript_38yv6"]
 script/source = "extends Node2D
@@ -33,10 +34,6 @@ func _ready():
 	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
-	#multiplayer.connected_to_server.connect(_on_connected_ok)
-	#multiplayer.connection_failed.connect(_on_connected_fail)
-	#multiplayer.server_disconnected.connect(_on_server_disconnected)
-	#add_player(1)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -47,7 +44,8 @@ func _on_player_disconnected(id):
 	rpc(\"_del_player\", id)
 #@rpc(\"any_peer\") 
 func _on_player_connected(id):
-	print(\"player connected id: \", id)
+	pass
+	#print(\"player connected id: \", id)
 
 @rpc(\"reliable\", \"any_peer\") func _selectChampion(champId):
 	print(\"select \", champId)
@@ -82,11 +80,6 @@ size = Vector3(100, 0.002, 100)
 script = SubResource("GDScript_38yv6")
 player_scene = ExtResource("1_l57ff")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
-light_energy = 1.4
-shadow_enabled = true
-
 [node name="PlayersMan" type="Node2D" parent="."]
 script = ExtResource("2_7jm3s")
 
@@ -103,5 +96,13 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ceuxm")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area2D"]
 shape = SubResource("BoxShape3D_lrj47")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Area2D"]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, -0.0551846, 0)
+light_energy = 1.4
+shadow_enabled = true
+
 [node name="Camera2D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 18.7466, 0)
+
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource("4_rfhra")

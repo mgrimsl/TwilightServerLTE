@@ -1,7 +1,7 @@
 extends Area3D
 
 var damage = 5
-var dest = Vector3()
+var dest = Vector3(1,1,1)
 var velocity = Vector3.ZERO
 var start = Vector3()
 var constantTravel = false
