@@ -1,7 +1,7 @@
 extends Node
 
 var abilityName = ""
-
+var action = preload("res://src/mangers/action.tscn")
 @rpc("any_peer") func input(input, mouse, targetName = null):
 	if(input == ""):
 		return
@@ -23,11 +23,23 @@ var abilityName = ""
 			abilityName = "A4"
 		"Right-Click":
 			abilityName = "AA"
-	var ability = AH.get_node(abilityName)
+
+	var cd = AH.has_node(abilityName+"CD")
+	if cd:
+		return
+	var ability = AH.instanceAbility(abilityName)
+	var target
 	if(targetName==null && ability.tracking):
 		return
-	if(targetName!=null && ability.tracking):
-		ability.target = get_parent().get_node("PlayersMan").get_node(targetName)
+	if(targetName!=null):
+		target = get_parent().get_node("PlayersMan").get_node(targetName)
+		if !ability.allyCast && target == caster:
+			return
+		if(!ability.tracking):
+			target = targetNode
 	else:
-		ability.target = targetNode
-	AQ.pushBack(ability)
+		target = targetNode
+	
+	ability.setTarget(target)
+	AH.addAbility(ability)
+	AQ.pushBack(ability,target)

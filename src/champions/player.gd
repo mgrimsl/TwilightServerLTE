@@ -53,19 +53,18 @@ var State = {
 		inAttackRange : false
 	}
 }
-#var AttackState = State["attackState"]
-#var MovementState = State["movementState"]
-#var BaseStats = State["BaseStats"]
 
-# Get the gravity from the project settings to be synced with RigidBody nodes.
 func _ready():
 	preload("res://assets/icon.svg")
 	$ActionQueue.move = move
 	$ActionQueue.stop = stop
 	parent = get_parent()
+func getChampData():
 	$GetChampData.getChampion(champId)
 	
 func _physics_process(delta):
+	if(State.BaseStats.currentHealth <= 0):
+		State.BaseStats.currentHealth = State.BaseStats.maxHealth
 	if(position.distance_to(State[target].position) > .2):
 		velocity = position.direction_to(State[target].position) * State.BaseStats[moveSpeed]
 		move_and_slide()
@@ -76,7 +75,7 @@ func stop():
 func move(movTarget = State[target]):
 	State[target] = movTarget
 	State.MovementState[destination] = movTarget.position
-	look_at(movTarget.position, Vector3.UP)
+	#look_at(movTarget.position, Vector3.UP)
 	State.MovementState[moving] = true
 	
 func setAttackingState(targetPlayer):
@@ -98,4 +97,5 @@ func updateBaseStats(data):
 
 func _on_timer_timeout():
 	State.MovementState[pos] = position
+	
 	rpc("updateState", State)

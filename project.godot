@@ -14,3 +14,7 @@ config/name="TwilightServerLTE"
 run/main_scene="res://MainScene.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://assets/icon.svg"
+
+[autoload]
+
+Global="*res://global.gd"
