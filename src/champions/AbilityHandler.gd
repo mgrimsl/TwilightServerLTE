@@ -1,7 +1,7 @@
 extends Node
 var channelQueue : Callable
-var abilityScn = preload("res://src/champions/Ability.tscn")
-var abilityData
+var abilityScn = preload("res://src/champions/projectiles/Ability.tscn")
+var abilityData ={}
 
 var A1CD = "A1CD"
 var A2CD = "A2CD"
@@ -19,13 +19,15 @@ func _physics_process(_delta):
 	if(has_node(A4CD)):
 		rpc("cooldown", "A4", int(get_node(A4CD).time_left)+1)
 # Called when the node enters the scene tree for the first time.
-func loadAbilities(data):
-	abilityData = data
+func loadAbilities(abilities):
+	for ability in abilities:
+		abilityData[ability["title"]] = ability 
+	#abilityData = data
 
 func instanceAbility(abilityName):
 	var ability = abilityScn.instantiate()
 	var aData = abilityData[abilityName]
-	ability.title = abilityName
+	ability.title = aData["title"]
 	for prop in aData:
 		ability.set(prop, aData[prop])
 	return ability

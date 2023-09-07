@@ -2,8 +2,6 @@ extends CharacterBody3D
 
 var parent
 var champId
-var autoAttackscn = preload("res://src/champions/projectiles/PointClick.tscn")
-var ability1scn = preload("res://src/champions/projectiles/SkillShot.tscn")
 var AATimer : Timer
 var AAWindUp : Timer
 var A1Timer : Timer
@@ -66,8 +64,8 @@ func _physics_process(delta):
 	if(State.BaseStats.currentHealth <= 0):
 		State.BaseStats.currentHealth = State.BaseStats.maxHealth
 	if(position.distance_to(State[target].position) > .2):
-		velocity = position.direction_to(State[target].position) * State.BaseStats[moveSpeed]
-		move_and_slide()
+		transform.origin += position.direction_to(State[target].position) * State.BaseStats[moveSpeed] * delta
+		#move_and_slide()
 
 func stop():
 	State[target] = self
@@ -75,7 +73,6 @@ func stop():
 func move(movTarget = State[target]):
 	State[target] = movTarget
 	State.MovementState[destination] = movTarget.position
-	#look_at(movTarget.position, Vector3.UP)
 	State.MovementState[moving] = true
 	
 func setAttackingState(targetPlayer):

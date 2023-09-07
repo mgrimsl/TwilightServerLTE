@@ -20,3 +20,26 @@ func instanceNode(node_scn :PackedScene, parent, location = Vector3(0,1,0)):
 	node_instance.transform.origin = location
 	parent.add_child(node_instance)
 	return node_instance
+	
+func fixedTravel(node, delta):
+	if(node.position.distance_to(node.start) > node.tarvelDistance && node.active ):
+		node.startEffect()
+		node.emit_signal("atDest", node.dest)
+		return
+	node.speed = node.speed* node.acceleration
+	node.transform.origin += node.start.direction_to(node.dest) * node.speed * delta
+	
+
+func targetTravel(node, delta):
+	if(node.position.distance_to(node.dest) < .2  && node.active):
+		node.startEffect()
+		node.emit_signal("atDest", node.dest)
+		return
+	node.speed = node.speed*node.acceleration
+	node.transform.origin += node.position.direction_to(node.dest) * node.speed * delta
+
+func instantTravel(node, delta):
+	if !node.active || node.dest == node.transform.origin:
+		return
+	node.transform.origin = node.dest
+	node.emit_signal("atDest", node.dest)
