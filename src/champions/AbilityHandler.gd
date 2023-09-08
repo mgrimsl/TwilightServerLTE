@@ -8,6 +8,9 @@ var A2CD = "A2CD"
 var A3CD = "A3CD"
 var A4CD = "A4CD"
 
+func _ready():
+	get_parent().get_parent().get_parent().get_node("InputHandler").keyReleased.connect(_on_key_released)
+
 func _physics_process(_delta):
 
 	if(has_node(A1CD)):
@@ -22,6 +25,7 @@ func _physics_process(_delta):
 func loadAbilities(abilities):
 	for ability in abilities:
 		abilityData[ability["title"]] = ability 
+		
 	#abilityData = data
 
 func instanceAbility(abilityName):
@@ -34,8 +38,8 @@ func instanceAbility(abilityName):
 func addAbility(abilityInstance):
 	add_child(abilityInstance, true)
 	
-func spawn(abilityTitle, nodeName, size):
-	rpc("spawnAbility",abilityTitle, nodeName, size)
+func spawn(abilityTitle, nodeName, size, length, width):
+	rpc("spawnAbility",abilityTitle, nodeName, size, length, width)
 
 func _on_cd_timeout(name):
 	rpc("cooldown", str(name.split("C")[0]), 0, true)
@@ -43,9 +47,12 @@ func _on_cd_timeout(name):
 	timer.stop()
 	set(name+"CD", null)
 	timer.queue_free()
-	
+
+func _on_key_released(key):
+	if abilityData[key]["chargeable"]:
+		get_parent().get_node("ActionQueue").channel.emit_signal("timeout")
 		
 @rpc() func cooldown(title, timeleft, timeout=false):
 	pass
-@rpc() func spawnAbility(name, nodeName, size):
+@rpc() func spawnAbility(name, nodeName, size, length, width):
 	pass

@@ -25,25 +25,17 @@ func _process(delta):
 		ability.damage += ability.damage * delta * .50
 
 func _on_channel(action):
-	channel = true
-	player.State["BaseStats"]["moveSpeed"] *= .40
+	pass
 func _on_channel_complete(action):
-	if ability == null:
-		return
-	var targetNode = Node3D.new()
-	targetNode.position = player.mouse
-	ability.setTarget(targetNode)
-	channel = false
-	player.State["BaseStats"]["moveSpeed"] /= .40
+	pass
 func _on_hit(body):
 	if body != player: 
 		body.State["BaseStats"]["currentHealth"] -= ability.damage
-		body.State["BaseStats"]["moveSpeed"] *= .40
-		print("start")
+		body.State["StatusEffects"]["stunned"] = true
+		print(body.State["StatusEffects"]["stunned"])
 		await get_tree().create_timer(debuffTime).timeout
-		print("done")
-		body.State["BaseStats"]["moveSpeed"] /= .40
-		
+		body.State["StatusEffects"]["stunned"] = false
+	ability.endEffect()
 	queue_free()
 func _at_dest(dest):
 	pass

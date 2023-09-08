@@ -12,7 +12,7 @@ var actionQueue : Node
 #A1cd = 2
 var channelQueue : Callable
 var actionRange = .3
-
+var mouse
 var moveSpeed = "moveSpeed"
 var maxHealth = "maxHealth"
 var attackSpeed = "attackSpeed"
@@ -30,6 +30,7 @@ var target = "target"
 var inAttackRange = "inAttackRange"
 var State = {
 	target : self,
+	"targetPos" : null,
 	"BaseStats" : {
 		moveSpeed: 1,
 		maxHealth: 100,
@@ -49,6 +50,9 @@ var State = {
 		channel : false,
 		canAttack : true,
 		inAttackRange : false
+	},
+	"StatusEffects": {
+		"stunned" : false
 	}
 }
 
@@ -61,14 +65,21 @@ func getChampData():
 	$GetChampData.getChampion(champId)
 	
 func _physics_process(delta):
+	if State["StatusEffects"]["stunned"]:
+		return
+	if(State["target"].position != position):
+		look_at(State["target"].position, Vector3.UP)
+	State["targetPos"] = State["target"].position
 	if(State.BaseStats.currentHealth <= 0):
 		State.BaseStats.currentHealth = State.BaseStats.maxHealth
-	if(position.distance_to(State[target].position) > .2):
-		transform.origin += position.direction_to(State[target].position) * State.BaseStats[moveSpeed] * delta
+	if(position.distance_to(State["MovementState"]["destination"]) > .2):
+		transform.origin += position.direction_to(State["MovementState"]["destination"]) * State.BaseStats[moveSpeed] * delta
+	else:
+		stop()
 		#move_and_slide()
 
 func stop():
-	State[target] = self
+	State["MovementState"]["destination"] = position
 	State.MovementState[moving] = false
 func move(movTarget = State[target]):
 	State[target] = movTarget

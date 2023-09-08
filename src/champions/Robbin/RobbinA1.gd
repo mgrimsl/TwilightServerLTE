@@ -30,6 +30,7 @@ func _on_channel(action):
 func _on_channel_complete(action):
 	if ability == null:
 		return
+	print("complete")
 	var targetNode = Node3D.new()
 	targetNode.position = player.mouse
 	ability.setTarget(targetNode)
@@ -46,7 +47,7 @@ func _on_hit(body):
 		
 	queue_free()
 func _at_dest(dest):
-	pass
+	queue_free()
 	#queue_free()
 func _duration_end():
 	pass

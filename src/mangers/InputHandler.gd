@@ -2,14 +2,17 @@ extends Node
 
 var abilityName = ""
 var action = preload("res://src/mangers/action.tscn")
-@rpc("any_peer") func input(input, mouse, targetName = null):
+signal keyReleased(ability)
+
+@rpc("any_peer") func input(input, mouse, keyReleased ,targetName = null):
+	
+	var caster = $"../PlayersMan".get_node(str(multiplayer.get_remote_sender_id()))
+	caster.mouse = mouse
 	if(input == ""):
 		return
-	var caster = $"../PlayersMan".get_node(str(multiplayer.get_remote_sender_id()))
 	var AH = caster.get_node("AbilityHandler")
 	var AQ = caster.get_node("ActionQueue")
 	var targetNode = Node3D.new()
-
 	targetNode.name = "tempNode"
 	targetNode.position = mouse
 	match input:
@@ -23,6 +26,8 @@ var action = preload("res://src/mangers/action.tscn")
 			abilityName = "A4"
 		"Right-Click":
 			abilityName = "AA"
+	if(keyReleased):
+		self.keyReleased.emit(abilityName)
 
 	var cd = AH.has_node(abilityName+"CD")
 	if cd:
