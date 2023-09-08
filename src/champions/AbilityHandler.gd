@@ -14,13 +14,13 @@ func _ready():
 func _physics_process(_delta):
 
 	if(has_node(A1CD)):
-		rpc("cooldown", "A1", int(get_node(A1CD).time_left)+1)
+		rpc_id(int(str(get_parent().name)),"cooldown", "A1", int(get_node(A1CD).time_left)+1)
 	if(has_node(A2CD)):
-		rpc("cooldown", "A2", int(get_node(A2CD).time_left)+1)
+		rpc_id(int(str(get_parent().name)),"cooldown", "A2", int(get_node(A2CD).time_left)+1)
 	if(has_node(A3CD)):
-		rpc("cooldown", "A3", int(get_node(A3CD).time_left)+1)
+		rpc_id(int(str(get_parent().name)),"cooldown", "A3", int(get_node(A3CD).time_left)+1)
 	if(has_node(A4CD)):
-		rpc("cooldown", "A4", int(get_node(A4CD).time_left)+1)
+		rpc_id(int(str(get_parent().name)),"cooldown", "A4", int(get_node(A4CD).time_left)+1)
 # Called when the node enters the scene tree for the first time.
 func loadAbilities(abilities):
 	for ability in abilities:
