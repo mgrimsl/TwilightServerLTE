@@ -51,15 +51,10 @@ func _on_player_connected(id):
 	print(\"select \", champId)
 	var id = multiplayer.get_remote_sender_id()
 	_register_player.rpc_id(id,id)
-	#var player = get_node(\"/root/Global\").instanceNode(player_scene,$PlayersMan)
-	var player = player_scene.instantiate()
-	#var player = Robbin.new()
-	player.set_script(load(\"res://src/champions/Robbin/Robbin.gd\"))
-	$PlayersMan.add_child(player)
+	var player = get_node(\"/root/Global\").instanceNode(player_scene,$PlayersMan)
 	player.champId = champId
 	player.name = str(id)
 	player.getChampData()
-
 #	$PlayersMan.add_child(player)
 
 @rpc(\"reliable\")

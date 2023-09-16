@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmbm84b5aybl0"]
+[gd_scene load_steps=2 format=3 uid="uid://bxfefxchsh6bo"]
 
 [ext_resource type="Script" path="res://src/mangers/Move.gd" id="1_qavl8"]
 

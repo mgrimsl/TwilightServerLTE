@@ -6,6 +6,8 @@ const UNCANCELABLE = 3
 const MOVE_CHANNEL = 4
 const MOVE = 5
 const INSTANT = 0
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -43,4 +45,4 @@ func instantTravel(node, delta):
 		return true
 	node.transform.origin = node.dest
 	node.emit_signal("atDest", node.dest)
-	return false
+	

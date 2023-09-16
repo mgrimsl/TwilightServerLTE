@@ -4,8 +4,8 @@
 [ext_resource type="Script" path="res://src/mangers/ActionQueue.gd" id="3_ve0pt"]
 [ext_resource type="Script" path="res://src/champions/Robbin/A1/RobbinA1.gd" id="4_0n5vm"]
 [ext_resource type="PackedScene" uid="uid://8xdb00oymbhe" path="res://src/champions/projectiles/projectile.tscn" id="4_eil3w"]
-[ext_resource type="PackedScene" uid="uid://dl2dunkw00t6b" path="res://src/champions/rectangle.tscn" id="5_cti5g"]
 [ext_resource type="Script" path="res://src/champions/Robbin/A2/RobbinA2.gd" id="6_17g00"]
+[ext_resource type="PackedScene" uid="uid://dl2dunkw00t6b" path="res://src/champions/projectiles/colliders/rectangle.tscn" id="6_21fif"]
 [ext_resource type="Script" path="res://src/champions/Robbin/A3/RobbinA3.gd" id="7_q64u3"]
 [ext_resource type="Script" path="res://src/champions/Robbin/AA/BasicAttack.gd" id="8_i6ytd"]
 [ext_resource type="Script" path="res://src/champions/Robbin/A4/RobbinA4.gd" id="9_drkx7"]
@@ -68,6 +68,7 @@ mesh = SubResource("SphereMesh_4yyxb")
 script = ExtResource("3_ve0pt")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("")
 spawn_path = NodePath("..")
 
 [node name="A1" type="Node3D" parent="." node_paths=PackedStringArray("projectileTemplate", "multiplayerSpawner", "actor")]
@@ -76,14 +77,14 @@ projectileTemplate = NodePath("projectile")
 multiplayerSpawner = NodePath("../MultiplayerSpawner")
 damage = 8
 channel = 3.0
-cooldown = 5.0
+cooldown = 2.0
 title = "A1"
 actionType = 3
 actor = NodePath("..")
 
 [node name="projectile" parent="A1" instance=ExtResource("4_eil3w")]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-collider = ExtResource("5_cti5g")
+collider = ExtResource("6_21fif")
 width = 0.25
 travelDistance = 10.0
 speed = 8.0
@@ -96,7 +97,6 @@ allyCast = true
 despawnAtDest = false
 duration = 30
 channel = 0.25
-cooldown = 5.0
 range = 10.0
 title = "A2"
 actionType = 0
@@ -113,7 +113,6 @@ travelType = 2
 script = ExtResource("7_q64u3")
 allyCast = true
 channel = 0.25
-cooldown = 8.0
 title = "A3"
 actionType = 0
 actor = NodePath("..")
@@ -124,7 +123,6 @@ projectileTemplate = NodePath("projectile")
 multiplayerSpawner = NodePath("../MultiplayerSpawner")
 duration = 3
 channel = 0.25
-cooldown = 10.0
 range = 10.0
 title = "A4"
 actionType = 0
@@ -143,8 +141,7 @@ projectileTemplate = NodePath("projectile")
 multiplayerSpawner = NodePath("../MultiplayerSpawner")
 damage = 5
 cost = 0
-channel = 0.11
-cooldown = 1.0
+channel = 0.25
 range = 8.0
 title = "AA"
 actionType = 1

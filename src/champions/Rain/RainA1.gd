@@ -1,21 +1,8 @@
-extends Node
+class_name RainA1 extends Effect
 
-var player
-var ability = null
-var channel = false
-var debuffTime = 2
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	var aq = get_parent().get_parent().get_node("ActionQueue")
-	aq.channelAction.connect(_on_channel)
-	aq.channelActionComplete.connect(_on_channel_complete)
-	player = get_parent().get_parent()
+
 	
-	
-	
-
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if channel && ability != null && ability.travelDistance <= 18:
@@ -31,8 +18,8 @@ func _on_channel_complete(action):
 	if ability == null:
 		return
 	var targetNode = Node3D.new()
-	targetNode.position = player.mouse
-	ability.setTarget(targetNode)
+	#targetNode.position = player.mouse
+	#ability.setTarget(targetNode)
 	channel = false
 	player.State["BaseStats"]["moveSpeed"] /= .40
 func _on_hit(body):
